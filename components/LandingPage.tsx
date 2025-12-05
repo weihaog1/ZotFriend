@@ -1,14 +1,15 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
-interface LandingPageProps {
-  onEnterApp: () => void;
-}
+export const LandingPage: React.FC = () => {
+  const navigate = useNavigate();
 
-export const LandingPage: React.FC<LandingPageProps> = ({ onEnterApp }) => {
+  const enterApp = () => navigate('/swipe');
+
   return (
     <div className="min-h-screen bg-[#FDFBF7] flex flex-col relative overflow-hidden text-dark-900 selection:bg-uci-gold selection:text-black">
-      
+
       {/* Abstract Background Shapes */}
       <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] bg-uci-blue/10 rounded-full blur-[120px] mix-blend-multiply filter pointer-events-none" />
       <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-uci-gold/20 rounded-full blur-[100px] mix-blend-multiply filter pointer-events-none" />
@@ -21,8 +22,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onEnterApp }) => {
             </div>
             <span className="text-2xl font-display font-bold tracking-tight">Zot<span className="text-uci-blue">Friend</span>.</span>
         </div>
-        <button 
-            onClick={onEnterApp}
+        <button
+            onClick={enterApp}
             className="hidden md:block px-6 py-2.5 bg-white border-2 border-black text-black font-bold text-sm hover:bg-uci-gold hover:translate-y-[-2px] hover:shadow-neo transition-all duration-200"
         >
             LAUNCH DEMO
@@ -30,9 +31,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onEnterApp }) => {
       </nav>
 
       <main className="flex-1 flex flex-col lg:flex-row items-center justify-center p-6 max-w-7xl mx-auto w-full relative z-10 gap-12 lg:gap-20">
-        
+
         {/* Text Content */}
-        <motion.div 
+        <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
@@ -41,7 +42,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onEnterApp }) => {
             <div className="inline-block mb-4 px-4 py-1.5 bg-uci-blue/10 text-uci-blue font-bold text-xs uppercase tracking-widest border border-uci-blue/20 rounded-full">
                 For UC Irvine Students
             </div>
-            
+
             <h1 className="text-6xl md:text-8xl font-display font-black leading-[0.9] tracking-tighter mb-6">
                 STUDY <br/>
                 <span className="relative inline-block">
@@ -50,14 +51,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onEnterApp }) => {
                 </span> <br/>
                 NOT ALONE.
             </h1>
-            
+
             <p className="text-lg md:text-xl text-gray-600 mb-10 max-w-xl mx-auto lg:mx-0 font-medium leading-relaxed">
                 The anti-doomscrolling app for Anteaters. Find study partners, gym buddies, or just someone to grab boba with at UTC.
             </p>
-            
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <button 
-                    onClick={onEnterApp}
+                <button
+                    onClick={enterApp}
                     className="px-8 py-4 bg-black text-white text-lg font-bold shadow-neo hover:shadow-neo-lg hover:-translate-y-1 transition-all active:translate-y-0 active:shadow-none border-2 border-black"
                 >
                     START SWIPING
@@ -71,7 +72,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onEnterApp }) => {
                 <div className="flex -space-x-3">
                     {[1,2,3,4].map((i) => (
                         <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-gray-200 overflow-hidden">
-                            <img src={`https://picsum.photos/100?random=${i+20}`} className="w-full h-full object-cover" />
+                            <img src={`https://picsum.photos/100?random=${i+20}`} className="w-full h-full object-cover" alt="" />
                         </div>
                     ))}
                 </div>
@@ -94,7 +95,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onEnterApp }) => {
                 className="absolute z-10 w-64 bg-white p-4 pb-8 rounded-2xl border-2 border-black shadow-neo transform -translate-x-12"
             >
                  <div className="h-48 bg-gray-200 rounded-xl mb-4 overflow-hidden relative">
-                    <img src="https://picsum.photos/400/600?random=4" className="w-full h-full object-cover" />
+                    <img src="https://picsum.photos/400/600?random=4" className="w-full h-full object-cover" alt="" />
                     <div className="absolute bottom-2 left-2 bg-white px-2 py-0.5 text-xs font-bold border border-black">ICS MAJOR</div>
                  </div>
                  <div className="h-4 w-3/4 bg-gray-900 rounded-sm mb-2"></div>
@@ -108,12 +109,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onEnterApp }) => {
                 className="absolute z-20 w-64 bg-white p-4 pb-8 rounded-2xl border-2 border-black shadow-neo transform translate-x-12 translate-y-8"
             >
                  <div className="h-48 bg-gray-200 rounded-xl mb-4 overflow-hidden relative">
-                    <img src="https://picsum.photos/400/600?random=99" className="w-full h-full object-cover" />
+                    <img src="https://picsum.photos/400/600?random=99" className="w-full h-full object-cover" alt="" />
                     <div className="absolute bottom-2 left-2 bg-uci-gold px-2 py-0.5 text-xs font-bold border border-black">98% MATCH</div>
                  </div>
                  <div className="h-4 w-2/3 bg-gray-900 rounded-sm mb-2"></div>
                  <div className="h-3 w-1/2 bg-gray-300 rounded-sm"></div>
-                 
+
                  {/* Floating Like Button */}
                  <div className="absolute -bottom-6 -right-6 w-16 h-16 bg-uci-blue rounded-full border-2 border-black flex items-center justify-center text-white shadow-neo">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-8 h-8">
@@ -140,7 +141,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onEnterApp }) => {
              <span className="text-uci-gold font-display font-bold text-xl mx-8 tracking-widest uppercase">★</span>
         </div>
       </div>
-      
+
       <style>{`
         @keyframes marquee {
           0% { transform: translateX(0); }
