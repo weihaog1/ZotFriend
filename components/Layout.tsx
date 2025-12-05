@@ -36,7 +36,7 @@ export const Layout: React.FC = () => {
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-1 relative w-full max-w-md mx-auto h-full pt-16 pb-24">
+      <main className="flex-1 relative w-full h-full pt-16">
         <Outlet />
       </main>
 

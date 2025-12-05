@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, useMotionValue, useTransform, PanInfo, AnimatePresence } from 'framer-motion';
 import { StudentProfile, SwipeDirection } from '../types';
 import { ProfileCard } from '../components/ProfileCard';
@@ -10,13 +10,22 @@ const SwipeCard: React.FC<{
   profile: StudentProfile;
   onSwipe: (direction: SwipeDirection) => void;
   onWhyMatch: () => void;
-}> = ({ profile, onSwipe, onWhyMatch }) => {
+  forceSwipe: SwipeDirection | null;
+}> = ({ profile, onSwipe, onWhyMatch, forceSwipe }) => {
   const x = useMotionValue(0);
   const rotate = useTransform(x, [-200, 200], [-25, 25]);
   const opacity = useTransform(x, [-200, -100, 0, 100, 200], [0.5, 1, 1, 1, 0.5]);
 
   const [dragDirection, setDragDirection] = useState<'left' | 'right' | null>(null);
   const [exitDirection, setExitDirection] = useState<'left' | 'right' | null>(null);
+
+  // Handle forced swipe from buttons/keyboard
+  useEffect(() => {
+    if (forceSwipe) {
+      setExitDirection(forceSwipe);
+      onSwipe(forceSwipe);
+    }
+  }, [forceSwipe]);
 
   const handleDragEnd = (event: any, info: PanInfo) => {
     const threshold = 100;
@@ -59,7 +68,7 @@ const SwipeCard: React.FC<{
     >
       <ProfileCard
         profile={profile}
-        dragDirection={dragDirection}
+        dragDirection={dragDirection || forceSwipe}
         onWhyMatch={onWhyMatch}
       />
     </motion.div>
@@ -70,21 +79,22 @@ export const SwipePage: React.FC = () => {
   const { profiles, addMatch } = useApp();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [swipeDirection, setSwipeDirection] = useState<'left' | 'right' | null>(null);
+  const [forceSwipe, setForceSwipe] = useState<SwipeDirection | null>(null);
   const [whyMatchModalOpen, setWhyMatchModalOpen] = useState(false);
   const [whyMatchProfile, setWhyMatchProfile] = useState<StudentProfile | null>(null);
+  const cardKey = useRef(0);
 
   const currentProfile = profiles[currentIndex];
 
   // Background gradient based on swipe direction
   const bgColor = swipeDirection === 'left'
-    ? 'linear-gradient(135deg, #fecaca 0%, #f3f4f6 100%)'
+    ? 'linear-gradient(180deg, #fecaca 0%, #fef2f2 50%, #f9fafb 100%)'
     : swipeDirection === 'right'
-    ? 'linear-gradient(135deg, #bbf7d0 0%, #f3f4f6 100%)'
-    : 'linear-gradient(135deg, #eff6ff 0%, #fff 100%)';
+    ? 'linear-gradient(180deg, #bbf7d0 0%, #f0fdf4 50%, #f9fafb 100%)'
+    : 'linear-gradient(180deg, #eff6ff 0%, #f8fafc 50%, #f9fafb 100%)';
 
   const handleSwipe = (direction: SwipeDirection) => {
     const profile = profiles[currentIndex];
-    setSwipeDirection(direction);
 
     // Check for match
     if (direction === 'right' && profile.hasLikedUser) {
@@ -95,27 +105,21 @@ export const SwipePage: React.FC = () => {
     setTimeout(() => {
       setCurrentIndex(prev => prev + 1);
       setSwipeDirection(null);
-    }, 300);
+      setForceSwipe(null);
+      cardKey.current += 1;
+    }, 350);
   };
 
   const handleButtonSwipe = (direction: SwipeDirection) => {
+    if (forceSwipe) return; // Prevent double swipe
     setSwipeDirection(direction);
-
-    const profile = profiles[currentIndex];
-    if (direction === 'right' && profile.hasLikedUser) {
-      addMatch(profile);
-    }
-
-    setTimeout(() => {
-      setCurrentIndex(prev => prev + 1);
-      setSwipeDirection(null);
-    }, 400);
+    setForceSwipe(direction);
   };
 
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (currentIndex >= profiles.length || whyMatchModalOpen) return;
+      if (currentIndex >= profiles.length || whyMatchModalOpen || forceSwipe) return;
 
       if (event.key === 'ArrowLeft') {
         event.preventDefault();
@@ -128,11 +132,12 @@ export const SwipePage: React.FC = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentIndex, profiles.length, whyMatchModalOpen]);
+  }, [currentIndex, profiles.length, whyMatchModalOpen, forceSwipe]);
 
   const resetStack = () => {
     setCurrentIndex(0);
     setSwipeDirection(null);
+    setForceSwipe(null);
   };
 
   const handleWhyMatch = () => {
@@ -141,18 +146,19 @@ export const SwipePage: React.FC = () => {
   };
 
   return (
-    <div className="h-full w-full">
-      <div
-        className="relative w-full h-full p-4 pb-24 flex flex-col items-center justify-center perspective-1000 transition-all duration-300"
-        style={{ background: bgColor }}
-      >
-        <AnimatePresence mode="popLayout">
+    <div
+      className="absolute inset-0 transition-all duration-300"
+      style={{ background: bgColor }}
+    >
+      <div className="relative w-full max-w-md mx-auto h-full p-4 pb-24 flex flex-col items-center justify-center perspective-1000">
+        <AnimatePresence mode="wait">
           {currentIndex < profiles.length ? (
             <SwipeCard
-              key={currentProfile.id}
+              key={`${currentProfile.id}-${cardKey.current}`}
               profile={currentProfile}
               onSwipe={handleSwipe}
               onWhyMatch={handleWhyMatch}
+              forceSwipe={forceSwipe}
             />
           ) : (
             <motion.div
@@ -188,7 +194,8 @@ export const SwipePage: React.FC = () => {
           <div className="absolute bottom-28 flex items-center gap-8 z-30 pointer-events-auto">
             <button
               onClick={() => handleButtonSwipe('left')}
-              className="w-16 h-16 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-300 hover:text-red-500 hover:bg-red-50 transition-all border border-gray-100 hover:scale-110 active:scale-90 hover:shadow-xl"
+              disabled={!!forceSwipe}
+              className="w-16 h-16 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-300 hover:text-red-500 hover:bg-red-50 transition-all border border-gray-100 hover:scale-110 active:scale-90 hover:shadow-xl disabled:opacity-50"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-8 h-8">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -196,7 +203,8 @@ export const SwipePage: React.FC = () => {
             </button>
             <button
               onClick={() => handleButtonSwipe('right')}
-              className="w-16 h-16 bg-gradient-to-br from-uci-blue to-blue-600 rounded-full shadow-lg flex items-center justify-center text-white transition-all hover:scale-110 active:scale-90 hover:shadow-blue-200 hover:shadow-xl border-2 border-transparent hover:border-white"
+              disabled={!!forceSwipe}
+              className="w-16 h-16 bg-gradient-to-br from-uci-blue to-blue-600 rounded-full shadow-lg flex items-center justify-center text-white transition-all hover:scale-110 active:scale-90 hover:shadow-blue-200 hover:shadow-xl border-2 border-transparent hover:border-white disabled:opacity-50"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" className="w-8 h-8">
                 <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />

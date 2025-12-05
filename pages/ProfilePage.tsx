@@ -8,8 +8,8 @@ export const ProfilePage: React.FC = () => {
   const { matches } = useApp();
 
   return (
-    <div className="h-full overflow-y-auto bg-gray-50">
-      <div className="p-8 text-center pt-8 flex flex-col items-center">
+    <div className="h-full overflow-y-auto bg-gray-50 pb-24">
+      <div className="max-w-md mx-auto p-8 text-center pt-8 flex flex-col items-center">
         <div className="w-32 h-32 rounded-full overflow-hidden mx-auto mb-6 border-4 border-white shadow-neo">
           <img src={CURRENT_USER_PROFILE.imageUrl} className="w-full h-full object-cover" alt="Profile" />
         </div>
