@@ -21,7 +21,6 @@ function App() {
   const [lastMatchedProfile, setLastMatchedProfile] = useState<StudentProfile | null>(null);
   const [whyMatchModalOpen, setWhyMatchModalOpen] = useState(false);
   const [whyMatchProfile, setWhyMatchProfile] = useState<StudentProfile | null>(null);
-  const [pendingNextCard, setPendingNextCard] = useState(false);
 
   // Motion Values for the top card
   const x = useMotionValue(0);
@@ -62,8 +61,14 @@ function App() {
     setLastDirection(direction);
     setDragDirection(null);
 
+    // Always move to next card immediately
+    setCurrentIndex(prev => prev + 1);
+
+    // Reset x position for the next card
+    setTimeout(() => x.set(0), 50);
+
     if (direction === 'right' && currentProfile.hasLikedUser) {
-      // It's a match - show modal first, delay card transition
+      // It's a match - show modal after card starts animating out
       const newMatch: Match = {
         id: Date.now().toString(),
         profileId: currentProfile.id,
@@ -72,22 +77,15 @@ function App() {
       };
       setMatches(prev => [...prev, newMatch]);
       setLastMatchedProfile(currentProfile);
-      setPendingNextCard(true);
-      setMatchModalOpen(true);
-    } else {
-      // No match - proceed with card transition immediately
-      setCurrentIndex(prev => prev + 1);
-      setTimeout(() => x.set(0), 50);
+      // Delay modal slightly to let card animation begin
+      setTimeout(() => setMatchModalOpen(true), 300);
     }
   };
 
   const handleMatchModalClose = () => {
     setMatchModalOpen(false);
-    if (pendingNextCard) {
-      setPendingNextCard(false);
-      setCurrentIndex(prev => prev + 1);
-      setTimeout(() => x.set(0), 50);
-    }
+    // Reset lastDirection to prevent animation issues
+    setLastDirection(null);
   };
 
   // Keyboard navigation for swiping with arrow keys
