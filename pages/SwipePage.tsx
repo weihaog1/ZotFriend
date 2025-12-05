@@ -55,16 +55,16 @@ const SwipeCard: React.FC<{
       onDragEnd={handleDragEnd}
       onDrag={handleDrag}
       whileTap={{ cursor: "grabbing", scale: 1.02 }}
-      className="absolute w-full h-full max-h-[700px] top-4 px-2 touch-none cursor-grab z-20"
-      initial={{ scale: 0.95, opacity: 0, y: 50 }}
-      animate={{ scale: 1, opacity: 1, y: 0 }}
+      className="absolute w-full h-full max-h-[600px] top-0 px-2 touch-none cursor-grab z-20"
+      initial={{ scale: 0.98, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
       exit={{
-        x: exitDirection === 'left' ? -1000 : 1000,
-        rotate: exitDirection === 'left' ? -45 : 45,
+        x: exitDirection === 'left' ? -500 : 500,
+        rotate: exitDirection === 'left' ? -15 : 15,
         opacity: 0,
-        transition: { duration: 0.4, ease: "easeOut" }
+        transition: { duration: 0.25, ease: "easeOut" }
       }}
-      transition={{ type: "spring", stiffness: 300, damping: 25 }}
+      transition={{ duration: 0.15 }}
     >
       <ProfileCard
         profile={profile}
@@ -107,7 +107,7 @@ export const SwipePage: React.FC = () => {
       setSwipeDirection(null);
       setForceSwipe(null);
       cardKey.current += 1;
-    }, 350);
+    }, 150);
   };
 
   const handleButtonSwipe = (direction: SwipeDirection) => {
@@ -150,7 +150,7 @@ export const SwipePage: React.FC = () => {
       className="absolute inset-0 transition-all duration-300"
       style={{ background: bgColor }}
     >
-      <div className="relative w-full max-w-md mx-auto h-full p-4 pb-24 flex flex-col items-center justify-center perspective-1000">
+      <div className="relative w-full max-w-md mx-auto h-full pt-2 px-4 pb-24 flex flex-col items-center justify-start perspective-1000">
         <AnimatePresence mode="wait">
           {currentIndex < profiles.length ? (
             <SwipeCard

@@ -128,17 +128,17 @@ export const LandingPage: React.FC = () => {
 
       {/* Marquee Footer */}
       <div className="py-4 bg-black overflow-hidden whitespace-nowrap border-t-2 border-black relative z-20">
-        <div className="flex animate-marquee">
-          {[0, 1].map((i) => (
-            <div key={i} className="flex shrink-0">
-              <span className="text-white font-display font-bold text-xl mx-8 tracking-widest uppercase">Find Your Squad</span>
-              <span className="text-uci-gold font-display font-bold text-xl mx-8 tracking-widest uppercase">★</span>
-              <span className="text-white font-display font-bold text-xl mx-8 tracking-widest uppercase">Ace Your Classes</span>
-              <span className="text-uci-gold font-display font-bold text-xl mx-8 tracking-widest uppercase">★</span>
-              <span className="text-white font-display font-bold text-xl mx-8 tracking-widest uppercase">Level Up Your GPA</span>
-              <span className="text-uci-gold font-display font-bold text-xl mx-8 tracking-widest uppercase">★</span>
-              <span className="text-white font-display font-bold text-xl mx-8 tracking-widest uppercase">Zot Zot Zot</span>
-              <span className="text-uci-gold font-display font-bold text-xl mx-8 tracking-widest uppercase">★</span>
+        <div className="flex animate-marquee w-max">
+          {[0, 1, 2, 3].map((i) => (
+            <div key={i} className="flex shrink-0 items-center">
+              <span className="text-white font-display font-bold text-xl mx-6 tracking-widest uppercase">Find Your Squad</span>
+              <span className="text-uci-gold font-display font-bold text-xl mx-6">★</span>
+              <span className="text-white font-display font-bold text-xl mx-6 tracking-widest uppercase">Ace Your Classes</span>
+              <span className="text-uci-gold font-display font-bold text-xl mx-6">★</span>
+              <span className="text-white font-display font-bold text-xl mx-6 tracking-widest uppercase">Level Up Your GPA</span>
+              <span className="text-uci-gold font-display font-bold text-xl mx-6">★</span>
+              <span className="text-white font-display font-bold text-xl mx-6 tracking-widest uppercase">Zot Zot Zot</span>
+              <span className="text-uci-gold font-display font-bold text-xl mx-6">★</span>
             </div>
           ))}
         </div>
@@ -150,7 +150,7 @@ export const LandingPage: React.FC = () => {
           100% { transform: translateX(-50%); }
         }
         .animate-marquee {
-          animation: marquee 15s linear infinite;
+          animation: marquee 20s linear infinite;
         }
       `}</style>
     </div>
