@@ -21,6 +21,7 @@ function App() {
   const [lastMatchedProfile, setLastMatchedProfile] = useState<StudentProfile | null>(null);
   const [whyMatchModalOpen, setWhyMatchModalOpen] = useState(false);
   const [whyMatchProfile, setWhyMatchProfile] = useState<StudentProfile | null>(null);
+  const [pendingNextCard, setPendingNextCard] = useState(false);
 
   // Motion Values for the top card
   const x = useMotionValue(0);
@@ -59,27 +60,34 @@ function App() {
   const swipe = (direction: SwipeDirection) => {
     const currentProfile = profiles[currentIndex];
     setLastDirection(direction);
-    
-    if (direction === 'right') {
-      // Check for match
-      if (currentProfile.hasLikedUser) {
-        const newMatch: Match = {
-          id: Date.now().toString(),
-          profileId: currentProfile.id,
-          timestamp: Date.now(),
-          profile: currentProfile
-        };
-        setMatches(prev => [...prev, newMatch]);
-        setLastMatchedProfile(currentProfile);
-        setMatchModalOpen(true);
-      }
-    }
-
-    // Move to next card
     setDragDirection(null);
-    setCurrentIndex(prev => prev + 1);
-    
-    setTimeout(() => x.set(0), 50);
+
+    if (direction === 'right' && currentProfile.hasLikedUser) {
+      // It's a match - show modal first, delay card transition
+      const newMatch: Match = {
+        id: Date.now().toString(),
+        profileId: currentProfile.id,
+        timestamp: Date.now(),
+        profile: currentProfile
+      };
+      setMatches(prev => [...prev, newMatch]);
+      setLastMatchedProfile(currentProfile);
+      setPendingNextCard(true);
+      setMatchModalOpen(true);
+    } else {
+      // No match - proceed with card transition immediately
+      setCurrentIndex(prev => prev + 1);
+      setTimeout(() => x.set(0), 50);
+    }
+  };
+
+  const handleMatchModalClose = () => {
+    setMatchModalOpen(false);
+    if (pendingNextCard) {
+      setPendingNextCard(false);
+      setCurrentIndex(prev => prev + 1);
+      setTimeout(() => x.set(0), 50);
+    }
   };
 
   const currentProfile = profiles[currentIndex];
@@ -246,10 +254,10 @@ function App() {
       <Navigation currentView={view} setView={setView} matchesCount={matches.length} />
 
       {/* Modals */}
-      <MatchModal 
-        isOpen={matchModalOpen} 
-        onClose={() => setMatchModalOpen(false)} 
-        matchedProfile={lastMatchedProfile} 
+      <MatchModal
+        isOpen={matchModalOpen}
+        onClose={handleMatchModalClose}
+        matchedProfile={lastMatchedProfile}
       />
       
       <WhyMatchModal
