@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, useMotionValue, useTransform, PanInfo, AnimatePresence } from 'framer-motion';
 import { MOCK_PROFILES, CURRENT_USER_PROFILE } from './data/mockProfiles';
 import { Match, StudentProfile, SwipeDirection, ViewState } from './types';
@@ -89,6 +89,27 @@ function App() {
       setTimeout(() => x.set(0), 50);
     }
   };
+
+  // Keyboard navigation for swiping with arrow keys
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // Only handle arrow keys on home view, when cards exist, and no modals are open
+      if (showLanding || view !== 'home' || currentIndex >= profiles.length || matchModalOpen || whyMatchModalOpen) {
+        return;
+      }
+
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        swipe('left');
+      } else if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        swipe('right');
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showLanding, view, currentIndex, profiles.length, matchModalOpen, whyMatchModalOpen]);
 
   const currentProfile = profiles[currentIndex];
 
