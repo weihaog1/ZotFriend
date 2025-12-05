@@ -100,10 +100,14 @@ function App() {
 
       if (event.key === 'ArrowLeft') {
         event.preventDefault();
-        swipe('left');
+        // Show visual feedback before swiping
+        setDragDirection('left');
+        setTimeout(() => swipe('left'), 150);
       } else if (event.key === 'ArrowRight') {
         event.preventDefault();
-        swipe('right');
+        // Show visual feedback before swiping
+        setDragDirection('right');
+        setTimeout(() => swipe('right'), 150);
       }
     };
 
