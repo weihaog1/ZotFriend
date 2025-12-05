@@ -55,7 +55,7 @@ const SwipeCard: React.FC<{
       onDragEnd={handleDragEnd}
       onDrag={handleDrag}
       whileTap={{ cursor: "grabbing", scale: 1.02 }}
-      className="absolute w-full h-full max-h-[600px] top-0 px-2 touch-none cursor-grab z-20"
+      className="absolute w-full h-[calc(100%-80px)] max-h-[720px] top-2 px-2 touch-none cursor-grab z-20"
       initial={{ scale: 0.98, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       exit={{
@@ -186,7 +186,7 @@ export const SwipePage: React.FC = () => {
 
         {/* Background Card Effect */}
         {currentIndex + 1 < profiles.length && (
-          <div className="absolute w-[92%] h-[680px] top-8 bg-white rounded-[32px] shadow-xl border-4 border-white opacity-40 z-0 transform scale-95 origin-bottom" />
+          <div className="absolute w-[92%] h-[calc(100%-100px)] max-h-[700px] top-6 bg-white rounded-[32px] shadow-xl border-4 border-white opacity-40 z-0 transform scale-95 origin-bottom" />
         )}
 
         {/* Bottom Action Buttons */}
