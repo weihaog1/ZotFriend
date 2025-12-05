@@ -1,0 +1,5 @@
+{
+  "name": "ZotFriend",
+  "description": "A Tinder-style study partner finder for UC Irvine students, featuring AI-powered compatibility matching.",
+  "requestFramePermissions": []
+}
