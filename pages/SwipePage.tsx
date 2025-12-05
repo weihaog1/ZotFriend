@@ -147,10 +147,10 @@ export const SwipePage: React.FC = () => {
 
   return (
     <div
-      className="absolute inset-0 transition-all duration-300"
+      className="absolute top-16 left-0 right-0 bottom-0 transition-all duration-300"
       style={{ background: bgColor }}
     >
-      <div className="relative w-full max-w-md mx-auto h-full pt-2 px-4 pb-24 flex flex-col items-center justify-start perspective-1000">
+      <div className="relative w-full max-w-md mx-auto h-full pt-4 px-4 pb-24 flex flex-col items-center justify-start perspective-1000">
         <AnimatePresence mode="wait">
           {currentIndex < profiles.length ? (
             <SwipeCard
